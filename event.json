@@ -1,18 +1,24 @@
 {
   "휴가일": {
-    "emoji": "https://example.com/vacation-emoji.png",
+    "emoji": "https://em-content.zobj.net/source/microsoft/407/check-mark-button_2705.png",
     "dates": {
       "2025-07-15": ["여름 휴가 시작"],
       "2025-07-19": ["여름 휴가 종료"]
     }
   },
   "기념일": {
-    "emoji": "https://example.com/celebration-emoji.png",
+    "emoji": "https://em-content.zobj.net/source/microsoft-teams/363/partying-face_1f973.png_1f382.png",
     "dates": {
       "2025-02-14": ["밸런타인데이"],
       "2025-03-14": ["화이트데이"],
       "2025-05-08": ["어버이날"],
       "2025-11-11": ["빼빼로데이"]
+    },
+  "생일": {
+    "emoji": "https://em-content.zobj.net/source/microsoft-teams/363/birthday-cake_1f382.png",
+    "dates": {
+      "2025-05-24": ["생일"],
+      "2026-05-24": ["생일"]
     }
   }
 }
