@@ -24,21 +24,31 @@
         }
 
         h1 {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             color: #333;
             margin-bottom: 5px;
         }
 
         #infoText {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             color: #555;
             margin-bottom: 10px;
             text-align: center;
             line-height: 1.5;
         }
 
+        #dateInfo {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #333;
+            display: none;
+            max-width: 300px;
+            width: 100%;
+        }
+
         #modeToggle {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             margin: 15px 0;
             padding: 12px 20px;
             border: none;
@@ -58,7 +68,6 @@
         }
 
         .calendar-container {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             display: flex;
             flex-direction: column;
             gap: 30px;
@@ -73,7 +82,6 @@
         }
 
         .month-grid {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 6px;
@@ -96,7 +104,6 @@
         }
 
         .day-label {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             font-size: 0.85em;
             text-align: center;
             font-weight: bold;
@@ -105,7 +112,6 @@
         }
 
         .day-cell {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             width: 32px;
             height: 32px;
             background-color: #ebedf0;
@@ -118,6 +124,7 @@
             color: #586069;
             position: relative;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .day-cell:hover {
@@ -132,10 +139,10 @@
         .day-cell.empty {
             background-color: transparent;
             border: none;
+            cursor: default;
         }
 
         .day-cell.today {
-          font-family: 'LINESeedKR-Bd', sans-serif;
             position: relative;
             border: 2px solid #ff6b6b;
             animation: pulse 2s infinite;
@@ -290,6 +297,7 @@
             <span id="remainingDays">0일 남음</span>
         </div>
     </div>
+    <div id="dateInfo"></div>
     <button id="modeToggle">잔디만 보기</button>
     <div class="calendar-container" id="calendarContainer"></div>
 
@@ -302,6 +310,7 @@
             const progressText = document.getElementById('progressText');
             const passedDaysEl = document.getElementById('passedDays');
             const remainingDaysEl = document.getElementById('remainingDays');
+            const dateInfoEl = document.getElementById('dateInfo');
 
             // 군복무 기간 설정 (2025.02.10 ~ 2026.10.09)
             const SERVICE_START_DATE = new Date(Date.UTC(2025, 1, 10)); // 2025-02-10
@@ -321,6 +330,12 @@
                 const m = String(date.getUTCMonth() + 1).padStart(2, '0');
                 const d = String(date.getUTCDate()).padStart(2, '0');
                 return `${y}-${m}-${d}`;
+            }
+
+            // 날짜를 한국식으로 표시 (예: 2025년 2월 10일)
+            function formatKoreanDate(dateStr) {
+                const [year, month, day] = dateStr.split('-');
+                return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
             }
 
             // 공휴일 데이터 가져오기
@@ -373,6 +388,19 @@
 
                 infoText.innerHTML = `군복무 기간: ${formatDate(SERVICE_START_DATE)} ~ ${formatDate(SERVICE_END_DATE)}<br>
                                     오늘 날짜: ${todayFormatted}${holidayText}`;
+            }
+
+            // 날짜 정보 표시
+            function showDateInfo(dateStr) {
+                const koreanDate = formatKoreanDate(dateStr);
+                let holidayText = '';
+                
+                if (holidays[dateStr]) {
+                    holidayText = ` (${holidays[dateStr].join(', ')})`;
+                }
+                
+                dateInfoEl.textContent = `${koreanDate}${holidayText}`;
+                dateInfoEl.style.display = 'block';
             }
 
             // 채워진 날짜
@@ -441,6 +469,11 @@
                                 : dateStr;
                             cell.appendChild(tooltip);
 
+                            // 날짜 클릭 이벤트 추가
+                            cell.addEventListener('click', function() {
+                                showDateInfo(dateStr);
+                            });
+
                             monthGrid.appendChild(cell);
                         } else {
                             const empty = document.createElement('div');
@@ -476,6 +509,11 @@
                         : dateStr;
                     cell.appendChild(tooltip);
 
+                    // 날짜 클릭 이벤트 추가
+                    cell.addEventListener('click', function() {
+                        showDateInfo(dateStr);
+                    });
+
                     line.appendChild(cell);
                     d.setUTCDate(d.getUTCDate() + 1);
                 }
@@ -488,6 +526,7 @@
                 showGrassOnly = !showGrassOnly;
                 modeToggle.textContent = showGrassOnly ? '달력 보기' : '잔디만 보기';
                 showGrassOnly ? generateGrassOnlyView() : generateFullCalendar();
+                dateInfoEl.style.display = 'none'; // 모드 전환시 날짜 정보 숨기기
             });
 
             // 초기화 함수
